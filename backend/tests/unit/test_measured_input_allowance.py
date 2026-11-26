@@ -6,7 +6,7 @@ from threading import Event
 from types import SimpleNamespace
 
 import pytest
-from workbench.agentic_workflow import send_and_record_model_requests as calls
+from workbench.agentic_workflow import execution as calls
 from workbench.job_storage import job_files_and_audit_log as storage
 from workbench.model_access.model_requests_and_responses import Result
 

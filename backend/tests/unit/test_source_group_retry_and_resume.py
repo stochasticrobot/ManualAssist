@@ -13,7 +13,7 @@ from workbench.model_access.model_requests_and_responses import (
     Result,
 )
 from workbench.data_models.analysis_and_question_models import FactExtraction
-from workbench.agentic_workflow.send_and_record_model_requests import Run
+from workbench.agentic_workflow.execution import Run
 from workbench.agentic_workflow.run_source_group_tasks import run_stage
 from workbench.agentic_workflow.model_call_allowances import BudgetPause
 from workbench.model_prompts.analysis_task_prompts import facts_prompt

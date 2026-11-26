@@ -4,7 +4,7 @@ not mean silently losing a concern."""
 from fixture_source_choices import local_evidence_reply, fixture_payload
 
 import json
-from workbench.agentic_workflow.send_and_record_model_requests import Run
+from workbench.agentic_workflow.execution import Run
 from workbench.job_storage import job_files_and_audit_log as storage
 from workbench.manual_analysis.group_related_uncertainty_proposals import group_related_uncertainty_proposals
 from workbench.model_access.model_requests_and_responses import Capabilities, ModelService, Result

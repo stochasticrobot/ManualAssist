@@ -5,7 +5,7 @@ usage stopping limits."""
 import pytest
 from workbench.job_storage import job_files_and_audit_log as storage
 from workbench.agentic_workflow.build_analysis_progress import summarize
-from workbench.agentic_workflow.send_and_record_model_requests import Run
+from workbench.agentic_workflow.execution import Run
 from workbench.agentic_workflow.model_call_allowances import BudgetPause
 
 

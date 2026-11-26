@@ -22,11 +22,11 @@ from workbench.manual_analysis.discover_and_review_uncertainties import (
 from workbench.model_access.model_requests_and_responses import ModelError
 from workbench.job_storage import job_files_and_audit_log as storage
 from workbench.result_exports.write_reports_and_data_exports import publish
-from workbench.document_search import index_and_search_parsed_text as knowledge
+from workbench.document_search import index as knowledge
 
 from workbench.agentic_workflow.model_call_allowances import BudgetPause
 from workbench.agentic_workflow.run_source_group_tasks import digest
-from workbench.agentic_workflow.send_and_record_model_requests import Run
+from workbench.agentic_workflow.execution import Run
 from workbench.agentic_workflow.validate_and_correct_model_json import (
     validation_message,
 )

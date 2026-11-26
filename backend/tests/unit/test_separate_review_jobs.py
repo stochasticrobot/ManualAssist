@@ -7,14 +7,14 @@ import json
 import pytest
 from pydantic import ValidationError
 from workbench.agentic_workflow.model_call_allowances import BudgetPause
-from workbench.agentic_workflow.send_and_record_model_requests import Run
+from workbench.agentic_workflow.execution import Run
 from workbench.job_storage import job_files_and_audit_log as storage
 from workbench.model_access.model_requests_and_responses import (
     Capabilities,
     ModelService,
     Result,
 )
-from workbench.procedure_guides import review_guide_with_separate_jobs as review
+from workbench.procedure_guides import reviewer as review
 
 TABLE = "| Problem | Remedy |\n| --- | --- |\n| Lock | Hold the blue key for three seconds. |\n| Noise | Clean the fan if clogged. |\n"
 

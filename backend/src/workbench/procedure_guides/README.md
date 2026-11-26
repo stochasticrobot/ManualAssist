@@ -17,7 +17,7 @@ proposed guides and keeps unresolved questions visible instead of inventing step
 | [generate_manual_procedure_guides.py](generate_manual_procedure_guides.py) | Find the manual's installation, maintenance and troubleshooting tasks and build their guides. |
 | [inspect_procedure_sources.py](inspect_procedure_sources.py) | Let a guide-writing AI look up missing instructions in the original manual. |
 | [legacy_cited_gap_schemas.py](legacy_cited_gap_schemas.py) | Read older saved troubleshooting replies using the citation rules they originally followed. |
-| [plan_source_linked_procedures.py](plan_source_linked_procedures.py) | Investigate one practical task and turn the manual's scattered instructions into a guide. |
+| [planner.py](planner.py) | Investigate one practical task and turn the manual's scattered instructions into a guide. |
 | [prepare_batched_guide_review.py](prepare_batched_guide_review.py) | Prepare focused comparisons between a guide's instructions and the manual passages behind them. |
 | [procedure_reply_models.py](procedure_reply_models.py) | Define what an AI must return while discovering, investigating and writing a guide. |
 | [recover_saved_guide_draft.py](recover_saved_guide_draft.py) | Prepare an already saved guide for another review without changing its instructions. |
@@ -25,7 +25,7 @@ proposed guides and keeps unresolved questions visible instead of inventing step
 | [retain_failed_procedure_result.py](retain_failed_procedure_result.py) | Keep a useful saved draft when an AI repeatedly returns an unusable guide reply. |
 | [retain_governing_heading_sources.py](retain_governing_heading_sources.py) | Keep the section headings that explain which instructions a manual passage belongs to. |
 | [review_actions_with_code_owned_evidence.py](review_actions_with_code_owned_evidence.py) | Break source text into reviewable statements and retain an earlier grouped guide checker. |
-| [review_guide_with_separate_jobs.py](review_guide_with_separate_jobs.py) | Review whether a generated guide follows the manual without adding or losing instructions. |
+| [reviewer.py](reviewer.py) | Review whether a generated guide follows the manual without adding or losing instructions. |
 | [summarize_guide_investigations.py](summarize_guide_investigations.py) | Show how far installation, maintenance and troubleshooting guide investigations have progressed. |
 | [validate_procedure_steps.py](validate_procedure_steps.py) | Reject broken guide structures and citations that do not match the supplied manual. |
 | [verify_reported_behavior_defects.py](verify_reported_behavior_defects.py) | Retain an earlier check of whether a claimed guide defect is supported by the text. |

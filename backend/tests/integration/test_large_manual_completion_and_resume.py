@@ -10,13 +10,13 @@ from fastapi.testclient import TestClient
 from workbench.http_endpoints.serve_application import app
 from workbench.http_endpoints import background_worker_and_question_lock as runtime
 from workbench.job_storage import job_files_and_audit_log as storage
-from workbench.agentic_workflow import send_and_record_model_requests as calls
+from workbench.agentic_workflow import execution as calls
 from workbench.model_access.model_requests_and_responses import (
     ModelService,
     Result,
     Capabilities,
 )
-from workbench.document_search import index_and_search_parsed_text as index
+from workbench.document_search import index as index
 
 
 class InlineWorker:

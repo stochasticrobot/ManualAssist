@@ -8,9 +8,9 @@ from fastapi.testclient import TestClient
 from workbench.job_storage import job_files_and_audit_log as storage
 from workbench.agentic_workflow import (
     run_manual_analysis as agent,
-    send_and_record_model_requests as calls,
+    execution as calls,
 )
-from workbench.document_search import index_and_search_parsed_text as knowledge
+from workbench.document_search import index as knowledge
 from workbench.pdf_processing import inspect_parsed_sources as inspection_tools
 from workbench.http_endpoints.serve_application import app
 from workbench.model_access.model_requests_and_responses import (

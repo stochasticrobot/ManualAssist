@@ -13,7 +13,7 @@ from workbench.model_access.model_requests_and_responses import (
 )
 from workbench.job_storage import job_files_and_audit_log as storage
 from workbench.agentic_workflow.model_call_allowances import BudgetPause
-from workbench.agentic_workflow.send_and_record_model_requests import Run
+from workbench.agentic_workflow.execution import Run
 from workbench.agentic_workflow.choose_document_inspections import investigate
 from workbench.agentic_workflow.estimate_inspection_allowance import (
     inspection_allowance,

@@ -14,8 +14,8 @@ import pytest
 from fastapi.testclient import TestClient
 from test_large_manual_completion_and_resume import InlineWorker, ManualModel
 from workbench.agentic_workflow import run_manual_analysis as analysis
-from workbench.agentic_workflow import send_and_record_model_requests as calls
-from workbench.document_search import index_and_search_parsed_text as index
+from workbench.agentic_workflow import execution as calls
+from workbench.document_search import index as index
 from workbench.document_search.find_related_result_guides import (
     find_related_result_guides,
 )
@@ -23,7 +23,7 @@ from workbench.http_endpoints import background_worker_and_question_lock as runt
 from workbench.http_endpoints.serve_application import app
 from workbench.job_storage import job_files_and_audit_log as storage
 from workbench.model_access.model_requests_and_responses import ModelService, Result
-from workbench.procedure_guides.plan_source_linked_procedures import (
+from workbench.procedure_guides.planner import (
     plan_source_linked_procedure,
 )
 from workbench.procedure_guides.procedure_reply_models import ProcedureDraft

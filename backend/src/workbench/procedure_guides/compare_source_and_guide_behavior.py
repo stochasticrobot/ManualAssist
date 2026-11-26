@@ -386,7 +386,7 @@ def compare_source_and_guide_behavior(guide, sources, run, task=None, document=N
         Never trusts a model's approval flag. Propagates provider/format/budget errors
         so the caller can preserve the validated draft without calling it complete.
     """
-    from workbench.procedure_guides.review_guide_with_separate_jobs import (
+    from workbench.procedure_guides.reviewer import (
         compare_source_and_guide_behavior as focused_review,
     )
 

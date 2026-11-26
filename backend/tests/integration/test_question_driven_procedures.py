@@ -12,8 +12,8 @@ from behavior_review_fixture import behavior_reply
 
 from fastapi.testclient import TestClient
 from test_large_manual_completion_and_resume import InlineWorker
-from workbench.agentic_workflow.send_and_record_model_requests import Run
-from workbench.agentic_workflow import send_and_record_model_requests as calls
+from workbench.agentic_workflow.execution import Run
+from workbench.agentic_workflow import execution as calls
 from workbench.http_endpoints import background_worker_and_question_lock as runtime
 from workbench.http_endpoints.serve_application import app
 from workbench.job_storage import job_files_and_audit_log as storage
@@ -22,7 +22,7 @@ from workbench.model_access.model_requests_and_responses import (
     ModelService,
     Result,
 )
-from workbench.procedure_guides.plan_source_linked_procedures import (
+from workbench.procedure_guides.planner import (
     plan_source_linked_procedure,
 )
 

@@ -36,7 +36,7 @@ from workbench.procedure_guides.procedure_reply_models import (
     ProcedureFinalization,
     ProcedureInspectionDecision,
 )
-from workbench.procedure_guides.review_guide_with_separate_jobs import (
+from workbench.procedure_guides.reviewer import (
     compare_source_and_guide_behavior,
     review_configuration,
 )

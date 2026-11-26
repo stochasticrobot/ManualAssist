@@ -7,9 +7,9 @@ fresh investigation of the entire manual."""
 
 import json
 
-from workbench.agentic_workflow.send_and_record_model_requests import Run
+from workbench.agentic_workflow.execution import Run
 from workbench.data_models.analysis_and_question_models import Answer
-from workbench.document_search import index_and_search_parsed_text as knowledge
+from workbench.document_search import index as knowledge
 from workbench.document_search.find_related_result_guides import (
     find_related_result_guides,
 )

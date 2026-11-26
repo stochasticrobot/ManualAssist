@@ -131,8 +131,8 @@ Standalone diagrams: [system flow](docs/images/system-flow.svg) ·
 
 For implementation details, start with the
 [workflow entry point](backend/src/workbench/agentic_workflow/run_manual_analysis.py),
-[procedure planner](backend/src/workbench/procedure_guides/plan_source_linked_procedures.py),
-[current guide reviewer](backend/src/workbench/procedure_guides/review_guide_with_separate_jobs.py),
+[procedure planner](backend/src/workbench/procedure_guides/planner.py),
+[current guide reviewer](backend/src/workbench/procedure_guides/reviewer.py),
 and [review recovery](backend/src/workbench/procedure_guides/repair_unresolved_manual_guides.py).
 
 ## Technology stack

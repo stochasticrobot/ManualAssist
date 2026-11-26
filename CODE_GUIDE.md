@@ -7,11 +7,11 @@ procedure investigation from its initial evidence to its final review.
 | --- | --- |
 | [Analysis workflow](backend/src/workbench/agentic_workflow/run_manual_analysis.py) | Run extraction, generated aids, guide investigations, publication and uncertainty checks. |
 | [Procedure discovery](backend/src/workbench/procedure_guides/generate_manual_procedure_guides.py) | Find practical tasks and organize them into separate investigations. |
-| [Procedure planner](backend/src/workbench/procedure_guides/plan_source_linked_procedures.py) | Choose searches and reads, write a guide and respond to review corrections. |
+| [Procedure planner](backend/src/workbench/procedure_guides/planner.py) | Choose searches and reads, write a guide and respond to review corrections. |
 | [Source inspection](backend/src/workbench/procedure_guides/inspect_procedure_sources.py) | Return original manual text requested by a planner. |
-| [Guide review](backend/src/workbench/procedure_guides/review_guide_with_separate_jobs.py) | Check relevant requirements, coverage, source support and evidence gaps. |
+| [Guide review](backend/src/workbench/procedure_guides/reviewer.py) | Check relevant requirements, coverage, source support and evidence gaps. |
 | [Review recovery](backend/src/workbench/procedure_guides/repair_unresolved_manual_guides.py) | Recheck blocked guides while preserving accepted results. |
-| [Model requests](backend/src/workbench/agentic_workflow/send_and_record_model_requests.py) | Record requests, replies, failures and usage; enforce work limits. |
+| [Model requests](backend/src/workbench/agentic_workflow/execution.py) | Record requests, replies, failures and usage; enforce work limits. |
 | [Source references](backend/src/workbench/model_access/code_owned_source_evidence.py) | Attach original quotations and page references to passages selected by a model. |
 | [Browser navigation](frontend/src/application-navigation.js) | Connect user actions, page navigation and progress updates. |
 

@@ -23,5 +23,5 @@ analysis can retain useful results rather than start over.
 | [run_manual_analysis.py](run_manual_analysis.py) | Run the steps that turn a parsed manual into usable, source-linked results. |
 | [run_source_group_tasks.py](run_source_group_tasks.py) | Apply one analysis task to successive portions of the manual and save each result. |
 | [schedule_independent_model_tasks.py](schedule_independent_model_tasks.py) | Run independent pieces of analysis at the same time without starting them all at once. |
-| [send_and_record_model_requests.py](send_and_record_model_requests.py) | Send a task to the configured AI and keep a record of what was asked and returned. |
+| [execution.py](execution.py) | Send a task to the configured AI and keep a record of what was asked and returned. |
 | [validate_and_correct_model_json.py](validate_and_correct_model_json.py) | Handle AI answers whose required fields are missing, invalid or unreadable. |

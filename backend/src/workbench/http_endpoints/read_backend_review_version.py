@@ -19,14 +19,14 @@ from workbench.procedure_guides import (
     compare_source_and_guide_behavior as reader_fields,
 )
 from workbench.procedure_guides import check_stalled_review_objections as objections
-from workbench.procedure_guides import plan_source_linked_procedures as planner
+from workbench.procedure_guides import planner as planner
 from workbench.procedure_guides import prepare_batched_guide_review as preparation
 from workbench.procedure_guides import retain_governing_heading_sources as headings
 from workbench.procedure_guides import (
     review_actions_with_code_owned_evidence as source_units,
 )
 from workbench.procedure_guides import (
-    review_guide_with_separate_jobs as reviewer,
+    reviewer as reviewer,
 )
 
 router = APIRouter()

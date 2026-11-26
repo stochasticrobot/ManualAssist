@@ -16,7 +16,7 @@ from workbench.model_access.model_requests_and_responses import (
 )
 from workbench.job_storage import job_files_and_audit_log as storage
 from workbench.agentic_workflow.model_call_allowances import BudgetPause
-from workbench.agentic_workflow.send_and_record_model_requests import Run
+from workbench.agentic_workflow.execution import Run
 from workbench.agentic_workflow.run_source_group_tasks import run_stage
 
 

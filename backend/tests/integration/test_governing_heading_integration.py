@@ -7,7 +7,7 @@ import pytest
 from workbench.procedure_guides.retain_governing_heading_sources import bind_heading_sources, retain_heading_sources
 from workbench.procedure_guides.prepare_batched_guide_review import prepare_comparisons
 from workbench.procedure_guides.review_actions_with_code_owned_evidence import compare_source_and_guide_behavior, text_units
-from workbench.agentic_workflow.send_and_record_model_requests import Run
+from workbench.agentic_workflow.execution import Run
 from workbench.model_access.model_requests_and_responses import Capabilities, ModelService, Result
 from workbench.job_storage import job_files_and_audit_log as storage
 

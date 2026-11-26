@@ -15,7 +15,7 @@ from workbench.result_illustrations.prepare_source_illustrations import (
     public_manifest,
     content_hash,
 )
-from workbench.agentic_workflow.send_and_record_model_requests import Run
+from workbench.agentic_workflow.execution import Run
 
 router = APIRouter()
 

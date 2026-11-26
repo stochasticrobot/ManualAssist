@@ -25,7 +25,7 @@ from workbench.model_access.model_requests_and_responses import (
 from workbench.procedure_guides.consolidate_source_linked_tasks import (
     consolidate_source_linked_tasks,
 )
-from workbench.procedure_guides.plan_source_linked_procedures import (
+from workbench.procedure_guides.planner import (
     plan_source_linked_procedure,
 )
 from workbench.procedure_guides.procedure_reply_models import ProcedureCandidates
