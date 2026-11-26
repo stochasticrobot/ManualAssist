@@ -52,6 +52,6 @@ by the configured model provider; local storage does not make those requests off
 ## Continuous integration
 
 GitHub Actions installs the CPU dependencies, runs the offline tests, checks Python
-syntax and serious error rules with Ruff, and rebuilds the fictional demo. No API
+syntax and serious error rules with Ruff. No API
 keys or saved manuals are required. Linting is deliberately limited to error checks,
 not a claim that the whole repository meets a new style or static-type standard.

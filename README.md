@@ -4,11 +4,9 @@ An agentic AI project that turns a PDF operating manual into an interactive,
 source-linked reference: installation walkthroughs, maintenance procedures,
 troubleshooting guides, searchable FAQs, and answers that point back to the manual.
 
-Instead of stopping at a document summary, the application investigates individual
-tasks, assembles practical guides, and reviews them against the original passages.
-Readers can follow a step flow, inspect a supporting quotation, or open the cited
-PDF page. Missing instructions and unresolved questions remain visible.
-
+Instead of summarizing the manual in one pass, agents investigate individual tasks:
+they identify missing information, choose what to read next, check proposed instructions
+against the source, and revise them using review feedback.
 
 ## What it does
 
@@ -20,7 +18,7 @@ PDF page. Missing instructions and unresolved questions remain visible.
 - **Find answers:** filter FAQs by topic, search their questions and answers, or ask
   a question answered from retrieved manual passages.
 - **Inspect and export:** open original source pages, review uncertainties, and download
-  HTML reports, JSON data and CSV facts.
+  HTML reports, JSON results, and CSV lists of parts and maintenance facts.
 - **Resume saved work:** retain completed tasks and model-call records across bounded
   pauses; recheck blocked guides without repeating PDF extraction.
 
@@ -28,48 +26,60 @@ The browser, parsing, saved files and search index run locally. Model requests s
 selected passages—and selected reference images when applicable—to the configured
 provider. This is not an entirely offline application.
 
+## How the agents investigate
+
+Each installation, maintenance or troubleshooting task gets its own investigation.
+The agent tracks unanswered questions, searches the manual, reads relevant passages
+and neighbouring pages, then decides whether it has enough evidence to draft a guide.
+It can follow up on missing prerequisites, warnings, conditions and completion checks
+without the reader directing each search.
+
+```mermaid
+flowchart LR
+    A[Task and initial evidence] --> B[Identify unanswered questions]
+    B --> C[Choose a search or passage to read]
+    C --> B
+    B --> D[Draft a source-linked guide]
+    D --> E[Validate citations and review instructions]
+    E -->|Concrete correction| D
+    E -->|Accepted| F[Completed guide]
+    E -->|Unresolved or allowance exhausted| G[Retained draft and explicit gaps]
+```
+
+### Why separate investigation, drafting and review?
+
+The system is designed around a lower-cost model, not the assumption that one large
+prompt will produce a reliable manual. A model can miss instructions, invent details,
+or lose track of evidence when asked to do everything at once. Narrow steps give it
+one decision to make at a time:
+
+- **Investigate before drafting:** gather missing context instead of filling gaps by guessing.
+- **Validate with code:** check response structure, source references and exact quotations.
+- **Review distinct questions:** does a passage apply, is its instruction preserved, and
+  does the source support the guide's claims?
+- **Challenge objections and revise:** check whether a negative finding requires a concrete
+  change, then give the writer focused corrections rather than restarting the whole task.
+
+These checks reduce reliance on a single model answer; they do not guarantee correctness.
+The agents test claims against the manual—not the physical product. Code limits calls,
+saves progress and stops repeated unproductive work; exhausted reviews are not approval.
+See [architecture and agent responsibilities](docs/architecture.md) for the full workflow.
+
 ## Screenshots
 
-Real application views from a completed dishwasher-manual analysis. The screenshots
-show generated material, including its visible limitations, rather than mocked-up data.
+Real views from a completed dishwasher-manual analysis.
 
 ### Overview
 
-Source-linked specifications, safety information, original reference illustrations,
-and shortcuts to the main tasks.
+Specifications, safety information and original reference illustrations, linked to the source.
 
 ![Overview showing manual illustrations, specifications, safety information and task shortcuts](docs/images/overview.png)
 
 ### Installation
 
-An interactive step flow with the current instruction, supporting sources and
-Previous/Next buttons. The example shows step two of an unpacking guide.
+A source-linked step flow with instructions and Previous/Next navigation.
 
 ![Installation guide showing a five-step flow, selected instruction and navigation buttons](docs/images/installation.png)
-
-### FAQ
-
-Search generated questions and answers, filter by topic, and expand the original
-passage behind an answer.
-
-![Searchable FAQ with an expanded answer and supporting manual quotation](docs/images/faq.png)
-
-## Workflow
-
-```mermaid
-flowchart LR
-    A[PDF manual] --> B[Text, tables and OCR]
-    B --> C[Facts and task discovery]
-    C --> D[Agent investigates each task]
-    D --> E[Draft and source review]
-    E --> F[Interactive guides, FAQ and search]
-    E --> G[Explicit unresolved questions]
-```
-
-The application controls budgets, saved progress, evidence and completion. Procedure
-agents choose which passages to inspect and revise drafts using review feedback.
-Reviews are model checks, not human verification; unresolved findings remain visible.
-See [architecture and agent responsibilities](docs/architecture.md).
 
 ## Technology stack
 
@@ -96,10 +106,6 @@ Use Python 3.12 on Linux and a Bedrock account with access to your configured mo
 Follow the [installation and configuration guide](docs/setup.md), then run `./run.sh`
 and open **http://127.0.0.1:8786/**. The frontend needs no build step.
 
-For a no-key example, inspect the [fictional demonstration](examples/README.md):
-original PDF, parsed passages and generated results from controlled model replies.
-It exercises the real analysis workflow but is **not a live AI benchmark**.
-
 ## Development
 
 - [Code guide](CODE_GUIDE.md): where to start reading.
@@ -107,9 +113,8 @@ It exercises the real analysis workflow but is **not a live AI benchmark**.
 - [Tests](backend/tests/README.md): offline checks and their limits.
 - [Runtime requirements](requirements.txt) and [development requirements](requirements-dev.txt).
 
-GitHub Actions runs offline tests, targeted error linting and demo generation on pushes
-and pull requests. Changes are kept in focused commits; the original private workspace
-history is intentionally not published.
+GitHub Actions runs offline tests and targeted error linting on pushes and pull requests.
+Changes are kept in focused commits.
 
 ## Data and limitations
 
