@@ -21,6 +21,8 @@ USER.md
 MEMORY.md
 TOOLS.md
 *.pdf
+# Authored fictional example only; user manuals remain excluded.
+!/examples/demo/manual.pdf
 *.log
 *.tmp
 *.bak

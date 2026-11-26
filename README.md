@@ -54,86 +54,22 @@ passage behind an answer.
 
 ![Searchable FAQ with an expanded answer and supporting manual quotation](docs/images/faq.png)
 
-## How the system works
-
-**Application code controls the overall workflow. Models make bounded decisions
-inside it.** Successful parsing starts the first analysis automatically; opening a
-saved result does not start another analysis.
+## Workflow
 
 ```mermaid
-flowchart TD
-    A["Import PDF"] --> B["Local text, tables and OCR"]
-    B --> C["Source-linked facts"]
-    C --> D["FAQs and troubleshooting aids"]
-    D --> E["Reference illustrations"]
-    E --> F["Investigate procedure guides"]
-    F --> G["Results, exports and search index"]
-    G --> H["Cross-source uncertainty review"]
-    H --> I["Final results and explicit gaps"]
-    G -. "Early access" .-> J["Browse results and ask questions"]
-    I --> J
+flowchart LR
+    A[PDF manual] --> B[Text, tables and OCR]
+    B --> C[Facts and task discovery]
+    C --> D[Agent investigates each task]
+    D --> E[Draft and source review]
+    E --> F[Interactive guides, FAQ and search]
+    E --> G[Explicit unresolved questions]
 ```
 
-The most agentic part is **procedure investigation**. Each installation, maintenance
-or troubleshooting task has its own saved investigation. The planner chooses what
-to inspect next instead of receiving one fixed excerpt and producing a one-shot guide.
-
-```mermaid
-flowchart TD
-    A["Task and initial passages"] --> B["Identify missing information"]
-    B --> C{"Choose next action"}
-    C -->|Search or read| D["Search text or read sources"]
-    D --> B
-    C -->|Ready to draft or limit reached| E["Draft source-linked guide"]
-    E --> F["Validate and review guide"]
-    F -->|Revise within allowance| E
-    F -->|Review passes| G["Save guide and source gaps"]
-    F -->|Unresolved or no progress| H["Save unfinished draft"]
-```
-
-Repeated inspections and unchanged rejected drafts do not run indefinitely. When
-exploration stops making progress, the planner switches to drafting from the evidence
-already collected. A finish proposal is not approval: the draft still goes through
-source checks and model review.
-
-### Agentic components and application responsibilities
-
-| Component | What the model does | What application code controls |
-| --- | --- | --- |
-| Task discovery and organization | Identifies manual-supported tasks, combines overlapping leads and associates prerequisites. | Preserves source references and accounts for leads that remain unassigned. |
-| Procedure planner | Chooses source searches/reads, tracks unanswered questions and proposes or revises a guide. | Runs only allowed inspection actions, saves evidence and progress, and bounds work. |
-| Guide reviewer | Checks relevance, coverage, source support and stated evidence gaps. A focused follow-up asks whether negative findings require a concrete change. | Validates reply structure and source references, retains the audit, and prevents unresolved review from becoming approval. |
-| Uncertainty investigation | Proposes ambiguities and checks them against additional source groups. | Schedules cross-source checks and retains unresolved findings for the reader. |
-| Fact, FAQ and issue-specific tree generation | Produces structured content from supplied source groups. | Uses fixed workflow stages; these tasks are not autonomous source-inspection loops. |
-| Question answering | Answers from retrieved passages or reports insufficient evidence. | Searches the local index, validates citations and links related guides; it does not rerun the planner. |
-
-A reviewer is a separate model call, not a human reviewer or necessarily a different
-model. The application owns passage IDs, original quotations and page references;
-models select supporting passages rather than manufacture citation bookkeeping.
-Independent work can run concurrently, while dependent inspection and revision steps
-stay ordered.
-
-### Evidence, progress and recovery
-
-- **Traceable output:** source links connect generated text to original manual passages.
-- **Inspectable work:** saved requests, replies and usage records show which evidence
-  a model received and what it returned.
-- **Bounded processing:** call/input allowances, output limits and saved checkpoints
-  keep work finite. Compatible completed responses can be reused on explicit Resume.
-- **Targeted recovery:** unresolved guides can be rechecked and revised through the
-  normal planner and publisher while accepted guides remain intact.
-- **Visible limits:** a finished guide can still contain unanswered source questions.
-  Citation matching and model review do not independently establish correctness,
-  completeness or safety. Image-dependent procedure gaps may remain unresolved.
-
-Standalone diagrams: [system flow](docs/images/system-flow.svg) ·
-[agent investigation loop](docs/images/agent-investigation-loop.svg).
-
-For implementation details, start with the
-[workflow entry point](backend/src/workbench/agentic_workflow/run_manual_analysis.py),
-[procedure planner](backend/src/workbench/procedure_guides/planner.py),
-[current guide reviewer](backend/src/workbench/procedure_guides/reviewer.py),
-and [review recovery](backend/src/workbench/procedure_guides/repair_unresolved_manual_guides.py).
+The application controls budgets, saved progress, evidence and completion. Procedure
+agents choose which passages to inspect and revise drafts using review feedback.
+Reviews are model checks, not human verification; unresolved findings remain visible.
+See [architecture and agent responsibilities](docs/architecture.md).
 
 ## Technology stack
 
@@ -154,75 +90,35 @@ searches and reads; they do not execute arbitrary generated code. Only the Bedro
 provider has been exercised live in this project. New provider implementations can
 use the same request and response interface.
 
-## Run locally
+## Get started
 
-The application has been exercised on Linux with Python 3.12 and CPU-only PyTorch.
-Run these commands from the cloned repository:
+Use Python 3.12 on Linux and a Bedrock account with access to your configured models.
+Follow the [installation and configuration guide](docs/setup.md), then run `./run.sh`
+and open **http://127.0.0.1:8786/**. The frontend needs no build step.
 
-```bash
-python3.12 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install torch==2.15.0+cpu torchvision==0.29.2+cpu --index-url https://download.pytorch.org/whl/cpu
-python -m pip install -r requirements.txt
-cp .env.example .env
-```
+For a no-key example, inspect the [fictional demonstration](examples/README.md):
+original PDF, parsed passages and generated results from controlled model replies.
+It exercises the real analysis workflow but is **not a live AI benchmark**.
 
-For an existing checkout, keep your current `.env` rather than copying over it.
-Edit `.env` to supply your Bedrock API key, AWS region and permitted model IDs.
-Then start the local server:
+## Development
 
-```bash
-./run.sh
-```
+- [Code guide](CODE_GUIDE.md): where to start reading.
+- [Backend](backend/README.md) and [frontend](frontend/README.md): package responsibilities.
+- [Tests](backend/tests/README.md): offline checks and their limits.
+- [Runtime requirements](requirements.txt) and [development requirements](requirements-dev.txt).
 
-Open **http://127.0.0.1:8786/**. Keep the server bound to localhost unless you add
-appropriate access controls. Node.js is not required to run the application.
-OCR, layout and embedding models may download on first use. Uploading a usable
-manual starts its first bounded analysis and can incur model-provider charges.
+GitHub Actions runs offline tests, targeted error linting and demo generation on pushes
+and pull requests. Changes are kept in focused commits; the original private workspace
+history is intentionally not published.
 
-[requirements.txt](requirements.txt) pins direct runtime dependencies to the tested
-application environment and installs the local Python package. PyTorch is installed
-separately above to select CPU wheels. The repository's `frontend/` directory must
-remain beside `backend/`; this is a full-checkout application, not a backend-only wheel.
+## Data and limitations
 
-### Run the offline tests
+Credentials stay in ignored `.env`; uploaded manuals, generated reports and request
+records stay in ignored `data/`. Selected passages and images are sent to the configured
+model provider. Uploads currently allow 80 pages / 25 MiB. Generated instructions and
+safety interpretations need review; citations do not independently prove correctness.
 
-```bash
-python -m pip install -r requirements-dev.txt
-python -m pytest -q
-```
+## License
 
-The distributed tests use temporary storage and controlled model responses, with
-live Bedrock connections blocked. Private experiment snapshots and tests that depend
-on them are not included. See [test documentation](backend/tests/README.md).
-
-### What stays local
-
-Uploaded PDFs, extracted text, search collections, generated reports and model-call
-records are written under ignored `data/`. Credentials belong in ignored `.env`.
-Neither is part of this repository. Source passages sent for AI analysis are processed
-by the configured model provider; local storage does not make those requests offline.
-
-## Read the code
-
-Start with the [code guide](CODE_GUIDE.md), then the package READMEs:
-
-- [Backend](backend/README.md): document processing, AI work, storage and browser requests.
-- [Frontend](frontend/README.md): navigation, display and downloadable report templates.
-- [Model access](backend/src/workbench/model_access/README.md): provider connections and reply handling.
-- [Guide investigations](backend/src/workbench/procedure_guides/README.md): task discovery, inspections, drafting and review.
-
-## Processing limits
-
-Run and Resume each authorize a bounded work slice. Completed batches survive pauses;
-there is no total-document character cutoff. The UI shows actual token usage and
-labelled rough extraction estimates. Existing upload bounds remain 80 pages/25 MiB.
-Reloading or opening a job does not start paid work. See the code guide for exact
-request and continuation allowances.
-
-Source quotations are checked, not independently verified. Generated diagnostic
-instructions and safety interpretations require review. Older saved jobs remain
-available but do not acquire newly introduced outputs without new analysis.
-
-See [model access](backend/src/workbench/model_access/README.md) for the provider-independent interface and model-specific output allowances. Output-limited fact/ambiguity/FAQ/tree requests are divided into smaller source groups; failed attempts remain in the audit log.
+A project-wide license has not yet been selected. Do not assume permission to reuse
+or redistribute the project merely because its repository is visible to you.

@@ -1,0 +1,45 @@
+{
+  "pages": 3,
+  "items": [
+    {
+      "id": "install",
+      "text": "Connect the inlet hose.",
+      "page": 1,
+      "label": "text"
+    },
+    {
+      "id": "maintain",
+      "text": "Clean the filter with water.",
+      "page": 1,
+      "label": "text"
+    },
+    {
+      "id": "fault",
+      "text": "If the light flashes, stop and contact service.",
+      "page": 1,
+      "label": "text"
+    },
+    {
+      "id": "alarm",
+      "text": "If the alarm sounds, stop and contact service.",
+      "page": 1,
+      "label": "text"
+    },
+    {
+      "id": "safety",
+      "text": "Disconnect power before working.",
+      "page": 2,
+      "label": "text"
+    },
+    {
+      "id": "verify",
+      "text": "Check the connection for leaks after installation.",
+      "page": 3,
+      "label": "text"
+    }
+  ],
+  "tables": [],
+  "figures": [],
+  "outline": [],
+  "parser_status": "success"
+}
