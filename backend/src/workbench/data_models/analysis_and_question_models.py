@@ -117,27 +117,46 @@ class DiagnosticNode(Strict):
     """A check, remedy, service stop or explicit gap in the manual's instructions."""
 
     id: str
-    kind: Literal["check", "action", "stop", "unresolved"]
+    kind: Literal["check", "action", "stop", "unresolved"] = Field(
+        description="Use check when the reader must observe an outcome and follow "
+        "a branch, including after trying a remedy. A check needs at least one "
+        "source-supported branch. Use action, stop or unresolved only to end a path."
+    )
     text: str
     citations: list[Citation]
-    branches: list[Branch]
+    branches: list[Branch] = Field(
+        description="For check, provide at least one source-supported outcome and "
+        "its next node. For action, stop and unresolved, use an empty list. "
+        "Do not invent outcomes or next steps that the source does not establish."
+    )
 
     @model_validator(mode="after")
     def require_instruction_sources(self):
-        """Distinguish an evidence gap from a source-backed diagnostic instruction.
+        """Check sources and branch rules before requesting a corrected model reply.
 
         Args:
             self: Parsed node with its kind, citations and outgoing branches.
         Returns:
             The unchanged node. Raises ValueError when an instruction lacks sources
-            or an unresolved endpoint tries to prescribe an outgoing diagnostic path.
+            or the node kind disagrees with its branches. Errors name the node and
+            required shape; no node is rewritten or approved automatically.
         """
         if self.kind != "unresolved" and not self.citations:
             raise ValueError(
                 "Checks, actions and stop instructions require source citations"
             )
-        if self.kind == "unresolved" and self.branches:
-            raise ValueError("An unresolved evidence gap must terminate the path")
+        if self.kind == "check" and not self.branches:
+            raise ValueError(
+                f"Diagnostic node {self.id!r}: kind 'check' requires at least one "
+                "source-supported outcome branch. If the path ends here, use "
+                "the appropriate terminal kind: action, stop or unresolved."
+            )
+        if self.kind != "check" and self.branches:
+            raise ValueError(
+                f"Diagnostic node {self.id!r}: kind {self.kind!r} must terminate "
+                "the path with branches=[]. If the reader observes an outcome "
+                "and follows a source-supported branch, represent it as a check."
+            )
         return self
 
 
