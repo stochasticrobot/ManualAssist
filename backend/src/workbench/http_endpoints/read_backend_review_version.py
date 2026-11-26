@@ -29,6 +29,13 @@ from workbench.procedure_guides import (
     reviewer as reviewer,
 )
 
+from workbench.procedure_guides import (
+    planner_state,
+    review_jobs,
+    review_batches,
+    review_audit,
+)
+
 router = APIRouter()
 
 
@@ -68,6 +75,10 @@ def capture_review_runtime():
             ).hexdigest()
             for module in (
                 reviewer,
+                review_jobs,
+                review_batches,
+                review_audit,
+                planner_state,
                 objections,
                 preparation,
                 planner,

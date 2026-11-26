@@ -29,3 +29,15 @@ proposed guides and keeps unresolved questions visible instead of inventing step
 | [summarize_guide_investigations.py](summarize_guide_investigations.py) | Show how far installation, maintenance and troubleshooting guide investigations have progressed. |
 | [validate_procedure_steps.py](validate_procedure_steps.py) | Reject broken guide structures and citations that do not match the supplied manual. |
 | [verify_reported_behavior_defects.py](verify_reported_behavior_defects.py) | Retain an earlier check of whether a claimed guide defect is supported by the text. |
+
+## Planner and reviewer reading order
+
+1. [planner.py](planner.py) owns the investigation loop, saved work and request dispatch.
+2. [planner_state.py](planner_state.py) describes progress and independently testable transitions.
+3. [reviewer.py](reviewer.py) routes checks and decides whether unresolved findings remain.
+4. [review_jobs.py](review_jobs.py) defines each question and allowed reply.
+5. [review_batches.py](review_batches.py) splits requests without dropping source text.
+6. [review_audit.py](review_audit.py) records answers and proposed corrections.
+
+The four shortened module names replace the previous long import paths; update
+external imports when upgrading. Function names and saved JSON remain unchanged.

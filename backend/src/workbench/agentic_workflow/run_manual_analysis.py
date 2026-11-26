@@ -8,7 +8,9 @@ stage as a successful analysis."""
 
 import json
 import logging
-from workbench.procedure_guides.generate_manual_procedure_guides import generate_manual_procedure_guides
+from workbench.procedure_guides.generate_manual_procedure_guides import (
+    generate_manual_procedure_guides,
+)
 
 from pydantic import ValidationError
 
@@ -32,7 +34,18 @@ from workbench.agentic_workflow.validate_and_correct_model_json import (
 )
 
 
-def make_profile(document, inspection, extraction):
+from workbench.data_models.application_types import (
+    ParsedDocument,
+    InspectionResult,
+    ExtractionResult,
+)
+
+
+def make_profile(
+    document: ParsedDocument,
+    inspection: InspectionResult,
+    extraction: ExtractionResult,
+) -> dict:
     """Assemble validated stage outputs without generating new factual statements.
 
     Args:
@@ -113,7 +126,11 @@ def complete(job_id, profile, document, index_ready=False):
     storage.update(job_id, stage="Publish source-linked assets")
     publish(job_id, profile)
     storage.update(job_id, stage="Write local vector knowledge base")
-    chunks = json.loads((storage.job_dir(job_id) / "chunks.json").read_text()) if index_ready else knowledge.build(job_id, document)
+    chunks = (
+        json.loads((storage.job_dir(job_id) / "chunks.json").read_text())
+        if index_ready
+        else knowledge.build(job_id, document)
+    )
     review = [
         {**f, "status": "open", "note": ""}
         for f in profile["findings"] + profile.get("processing_notices", [])
@@ -166,14 +183,22 @@ def analyze(job_id: str, resume: bool = False, service=None):
     """
     path = storage.job_dir(job_id)
     storage.update(
-        job_id, status="analyzing", stage="Extract source-linked facts", message="",
-        active_model_calls=[]
+        job_id,
+        status="analyzing",
+        stage="Extract source-linked facts",
+        message="",
+        active_model_calls=[],
     )
     try:
         document = json.loads((path / "document.json").read_text())
         run = Run(job_id, service=service, replay=resume)
-        storage.event(job_id, "analysis_slice", resume=resume, call_allowance=run.limit,
-                      parallel_limit=run.concurrency)
+        storage.event(
+            job_id,
+            "analysis_slice",
+            resume=resume,
+            call_allowance=run.limit,
+            parallel_limit=run.concurrency,
+        )
         # Retain old inspection evidence for comparison, without invoking the retired
         # model loop. Fresh runs do not claim a classification or visual assessment.
         inspection_path = path / "decisions.json"
@@ -187,29 +212,42 @@ def analyze(job_id: str, resume: bool = False, service=None):
         profile = make_profile(document, inspection, extraction)
         profile = generate_decision_aids(job_id, profile, document, run)
         from workbench.result_illustrations.prepare_source_illustrations import prepare
+
         storage.update(job_id, stage="Prepare reference illustrations")
         prepare(job_id, document, run)
         # Let readers inspect completed facts, FAQ and issue-specific trees while
         # the longer guide investigations continue. This is not final publication.
-        storage.save(path / "profile.json", {**profile, "procedure_guides": [],
-                     "procedure_generation_pending": True, "review_pending": True})
+        storage.save(
+            path / "profile.json",
+            {
+                **profile,
+                "procedure_guides": [],
+                "procedure_generation_pending": True,
+                "review_pending": True,
+            },
+        )
         profile = generate_manual_procedure_guides(job_id, profile, document, run)
-        profile['review_pending'] = True
-        storage.update(job_id, stage='Publish source-linked assets')
+        profile["review_pending"] = True
+        storage.update(job_id, stage="Publish source-linked assets")
         publish(job_id, profile)
-        marker = path / 'usable-results-source.json'
+        marker = path / "usable-results-source.json"
         source_hash = digest(document)
-        if not marker.exists() or json.loads(marker.read_text())['source_hash'] != source_hash:
-            storage.update(job_id, stage='Write local vector knowledge base')
+        if (
+            not marker.exists()
+            or json.loads(marker.read_text())["source_hash"] != source_hash
+        ):
+            storage.update(job_id, stage="Write local vector knowledge base")
             chunks = knowledge.build(job_id, document)
             # Fixture indexes may only return chunks; persist the same manifest here
             # so production and injected providers share the completed-index boundary.
-            storage.save(path / 'chunks.json', chunks)
-            storage.save(marker, {'source_hash':source_hash})
+            storage.save(path / "chunks.json", chunks)
+            storage.save(marker, {"source_hash": source_hash})
         storage.update(job_id, results_available=True)
-        storage.event(job_id, 'usable_results_available', uncertainty_review_pending=True)
+        storage.event(
+            job_id, "usable_results_available", uncertainty_review_pending=True
+        )
         profile = review_uncertainties(job_id, profile, document, run)
-        profile['review_pending'] = False
+        profile["review_pending"] = False
         complete(job_id, profile, document, index_ready=True)
     except BudgetPause as exc:
         storage.event(job_id, "workflow_paused", reason=str(exc))

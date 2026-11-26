@@ -10,3 +10,6 @@ facts, questions or troubleshooting instructions.
 | File | What it does |
 | --- | --- |
 | [analysis_and_question_models.py](analysis_and_question_models.py) | Define the information required in AI answers and requests sent by the browser. |
+
+[application_types.py](application_types.py) describes original evidence, parsed documents,
+discovered tasks and guide results at application boundaries.

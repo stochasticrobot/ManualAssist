@@ -11,7 +11,10 @@ import json
 from dataclasses import asdict
 from threading import RLock
 
-from pydantic import ValidationError
+from pydantic import BaseModel, ValidationError
+from typing import Literal
+from collections.abc import Sequence
+from workbench.model_access.model_requests_and_responses import Image
 
 from workbench.agentic_workflow.model_call_allowances import (
     MAX_CALLS,
@@ -114,8 +117,11 @@ class Run:
             )
         if (
             self.count >= self.limit
-            or self.reported_input + self.unknown_input_estimate
-            + sum(self.input_reservations.values()) + estimate > MAX_INPUT_TOKENS
+            or self.reported_input
+            + self.unknown_input_estimate
+            + sum(self.input_reservations.values())
+            + estimate
+            > MAX_INPUT_TOKENS
         ):
             raise BudgetPause(
                 "This work allowance is complete. Resume to authorize another bounded continuation; completed responses will be reused."
@@ -138,12 +144,15 @@ class Run:
         Returns:
             None; persists a display snapshot, not a replacement for saved receipts.
         """
-        storage.update(self.job_id, input_allowance={
-            "limit": MAX_INPUT_TOKENS,
-            "reported": self.reported_input,
-            "reserved": sum(self.input_reservations.values()),
-            "unknown_estimate": self.unknown_input_estimate,
-        })
+        storage.update(
+            self.job_id,
+            input_allowance={
+                "limit": MAX_INPUT_TOKENS,
+                "reported": self.reported_input,
+                "reserved": sum(self.input_reservations.values()),
+                "unknown_estimate": self.unknown_input_estimate,
+            },
+        )
 
     def settle_input(self, seq, input_tokens):
         """Replace a pending estimate with provider input usage exactly once.
@@ -203,7 +212,15 @@ class Run:
             output_tokens=result.output_tokens,
         )
 
-    def call(self, role, prompt, schema=None, images=(), cap=2048, correct=True):
+    def call(
+        self,
+        role: Literal["text", "vision"],
+        prompt: str,
+        schema: type[BaseModel] | None = None,
+        images: Sequence[Image] = (),
+        cap: int = 2048,
+        correct: bool = True,
+    ) -> BaseModel | str:
         """Deduplicate identical concurrent tasks without changing their meaning.
 
         Args:

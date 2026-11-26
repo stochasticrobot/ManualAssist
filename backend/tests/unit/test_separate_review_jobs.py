@@ -2,6 +2,8 @@
 allowed answer choices. Controlled replies exercise uncertainty, source
 preservation, heading handling and continuation without contacting a model."""
 
+from workbench.procedure_guides import review_batches as batches, review_jobs
+
 import json
 
 import pytest
@@ -86,13 +88,26 @@ class RecordingOwner:
         """
         payload = json.loads(prompt.rsplit("\n", 1)[-1])["task"]
         if schema.__name__ == "ObjectionReply":
-            return schema.model_validate({"decisions": [
-                {"objection": c["objection"], "explanation": "Fixture uncertainty remains unresolved.",
-                 "verdict": "uncertain", "required_change": "", "reader_positions": [],
-                 "citations": [{"evidence_id": prompt.sources[0]["id"],
-                                "quote": prompt.sources[0]["text"]}]}
-                for c in payload["reported_defects"]
-            ]})
+            return schema.model_validate(
+                {
+                    "decisions": [
+                        {
+                            "objection": c["objection"],
+                            "explanation": "Fixture uncertainty remains unresolved.",
+                            "verdict": "uncertain",
+                            "required_change": "",
+                            "reader_positions": [],
+                            "citations": [
+                                {
+                                    "evidence_id": prompt.sources[0]["id"],
+                                    "quote": prompt.sources[0]["text"],
+                                }
+                            ],
+                        }
+                        for c in payload["reported_defects"]
+                    ]
+                }
+            )
         definitions = schema.model_json_schema()["$defs"]
         stage = (
             "relevance"
@@ -183,7 +198,7 @@ def test_support_fields_cannot_hide_a_concrete_objection(result, detail):
         None; schema validation fails without converting the response to approval.
     """
     with pytest.raises(ValidationError):
-        review.SupportJudgment(
+        review_jobs.SupportJudgment(
             comparison=1,
             explanation="Fixture.",
             unsupported_detail=detail,
@@ -252,9 +267,9 @@ def test_oversized_jobs_split_without_truncating_source(monkeypatch):
             A controlled estimate based solely on supplied comparison count.
         """
         payload = json.loads(request.prompt.rsplit("\n", 1)[-1])["task"]
-        return review.MAX_REQUEST_INPUT + 1 if len(payload["comparisons"]) > 1 else 1
+        return batches.MAX_REQUEST_INPUT + 1 if len(payload["comparisons"]) > 1 else 1
 
-    monkeypatch.setattr(review, "estimate_input", estimate)
+    monkeypatch.setattr(batches, "estimate_input", estimate)
     guide, sources, task = fixture_guide()
     owner = RecordingOwner()
     result, _ = review.compare_source_and_guide_behavior(guide, sources, owner, task)
