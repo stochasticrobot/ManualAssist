@@ -1,0 +1,35 @@
+/* Make downloaded HTML reports readable without loading the application’s browser
+styles. These rules format text, tables, quotations and limitations in a
+standalone report; they do not alter the saved content. */
+
+body {
+  font: 16px/1.6 system-ui;
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 24px;
+  color: #182d38;
+}
+h1,
+h2 {
+  color: #175c55;
+}
+article {
+  border-bottom: 1px solid #ddd;
+  padding: 12px 0;
+}
+small {
+  color: #526570;
+}
+blockquote {
+  border-left: 3px solid #8fb9ac;
+  padding-left: 16px;
+}
+a {
+  color: #12645e;
+}
+@media print {
+  body {
+    margin: 0;
+    font-size: 10pt;
+  }
+}

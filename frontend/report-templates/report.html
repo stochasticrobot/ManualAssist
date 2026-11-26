@@ -1,0 +1,110 @@
+<!doctype html>
+{# Create the downloadable HTML report from the manual’s saved analysis. The report
+brings together facts, generated guidance, citations and remaining uncertainties
+so the results can be read outside the application. #}
+
+
+<html lang="en">
+  <meta charset="utf-8" /><title>Manual report</title>
+  <style>
+    {% include 'report.css' %}
+  </style>
+  <h1>Manual report</h1>
+  <p>{{ profile.coverage_note }}</p>
+  <p>
+    Machine-extracted reference aid. Source quotations and tree structure are
+    checked; interpretation and safety coverage require review.
+  </p>
+  <h2>Processing notes</h2>
+  {% for notice in profile.get("processing_notices", []) %}
+  <p>{{ notice.issue }}</p>
+  {% endfor %}
+  <h2>Review findings</h2>
+  {% for finding in profile.findings %}
+  <article>
+    {{ finding.issue }}{% if finding.review_reason %}
+    <p>{{ finding.review_reason }}</p>
+    {% endif %}
+  </article>
+  {% endfor %}
+  <h2>Troubleshooting</h2>
+  {% for tree in profile.get('troubleshooting', []) %}
+  <section>
+    <h3>{{ tree.symptom }}</h3>
+    <p>Applies to: {{ tree.applies_to }}</p>
+    {% for precaution in tree.prerequisites %}
+    <article>
+      <b>{{ precaution.question }}</b>
+      <p>{{ precaution.answer }}</p>
+      {% for citation in precaution.citations %}{% include 'citation.html' %}{%
+      endfor %}
+    </article>
+    {% endfor %}
+    <p>Start at {{ tree.root }}.</p>
+    {% for node in tree.nodes %}
+    <article>
+      <b>{{ node.id }} · {{ node.kind }}</b>
+      <p>{{ node.text }}</p>
+      {% for citation in node.citations %}{% include 'citation.html' %}{% endfor
+      %}
+      <ul>
+        {% for branch in node.branches %}
+        <li>
+          {{ branch.condition }} → {{ branch.next_node }}{% for citation in
+          branch.citations %}{% include 'citation.html' %}{% endfor %}
+        </li>
+        {% endfor %}
+      </ul>
+    </article>
+    {% endfor %}
+  </section>
+
+  {% endfor %}
+  <h2>Source-linked procedure guides</h2>
+  {% if profile.get('procedure_generation_pending') %}
+  <p>Guide investigation is still incomplete.</p>
+  {% endif %} {% for guide in profile.get('procedure_guides', []) %}{% include
+  'procedure-guide.html' %} {% else %}
+  <p>No procedure guides have been saved.</p>
+  {% endfor %}
+  <h2>FAQ</h2>
+  {% for entry in profile.get('faq', []) %}
+  <article>
+    <h3>{{ entry.question }}</h3>
+    <p>{{ entry.answer }}</p>
+    <small>Applies to: {{ entry.applies_to }}</small>{% for citation in
+    entry.citations %}{% include 'citation.html' %}{% endfor %}
+  </article>
+  {% else %}
+  <p>No source-supported FAQ was extracted.</p>
+  {% endfor %}
+  <h2>Extracted facts</h2>
+  {% for fact in profile.facts %}
+  <article>
+    <small>{{ fact.category }}</small>
+    <b>{{ fact.name }}</b>: {{ fact.value }}
+    <small>({{ fact.applies_to }})</small>{% set citation = fact %}{% include
+    'citation.html' %}
+  </article>
+  {% endfor %}
+  <h2>Image inspections</h2>
+  {% for visual in profile.visual_observations %}
+  <article>
+    <h3>PDF page {{ visual.page }}</h3>
+    <p>{{ visual.observation }}</p>
+    <small>Unverified visual interpretation; requires review.</small>
+  </article>
+  {% endfor %} {% if profile.troubleshooting_checks %}
+  <h2>Documented troubleshooting checks</h2>
+  <p>Independent instructions, not an ordered diagnostic path.</p>
+  {% for check in profile.troubleshooting_checks %}
+  <h3>{{ check.symptom }}</h3>
+  <p>{{ check.applies_to }}</p>
+  <p>{{ check.instruction }}</p>
+  {% for c in check.citations %}
+  <p>
+    <a href="{{ source_url }}#page={{ c.page }}">Page {{ c.page }}</a>: {{
+    c.quote }}
+  </p>
+  {% endfor %}{% endfor %}{% endif %}
+</html>

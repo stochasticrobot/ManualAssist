@@ -1,0 +1,10 @@
+{
+  "name": "manual-workbench-frontend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "format": "prettier --write src index.html style.css report-templates",
+    "check": "prettier --check src index.html style.css report-templates"
+  },
+  "devDependencies": {"prettier": "3.8.1"}
+}

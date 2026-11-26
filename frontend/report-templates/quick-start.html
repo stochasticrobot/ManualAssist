@@ -1,0 +1,36 @@
+<!doctype html>
+{# Create the downloadable short reference sheet from selected saved safety and
+startup facts. This is a disclosed selection for quick reading, not the whole
+manual or a newly generated procedure. Original page citations remain attached to
+the displayed facts. #}
+
+
+<html lang="en">
+  <meta charset="utf-8" /><title>Quick start and critical safety</title
+  ><style>
+    {% include 'report.css' %}
+    @page{size:A4;margin:14mm}.quick{max-width:180mm;font-size:11px}.quick h1{font-size:22px}.quick-grid{columns:2;column-gap:20px}.quick article{break-inside:avoid}.quick p{margin:4px 0}@media print{.quick{padding:0;margin:0;font-size:9pt}}
+  </style>
+  <body class="quick">
+    <h1>Quick start / Critical safety</h1>
+    <p>
+      Selected {{ selected|length }} of {{ quick_total }} safety/startup facts
+      (up to four of each, source order). This is not a complete safety
+      checklist. Read the full manual and report.
+    </p>
+    <div class="quick-grid">
+      {% for fact in selected %}
+      <article>
+        <b>{{ fact.name }}</b>
+        <p>{{ fact.value }}</p>
+        <small
+          >{{ fact.applies_to }} ·
+          <a href="{{ source_url }}#page={{ fact.page }}"
+            >PDF page {{ fact.page }}</a
+          ></small
+        >
+      </article>
+      {% endfor %}
+    </div>
+  </body>
+</html>

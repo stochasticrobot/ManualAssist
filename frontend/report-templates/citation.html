@@ -1,0 +1,10 @@
+{# Show an original manual quotation and a link to its PDF page in an exported
+report. The report supplies the quotation and page number; this template displays
+them without asking an AI to create or verify evidence. #}
+
+<p>
+  <a href="{{ source_url }}#page={{ citation.page }}"
+    >PDF page {{ citation.page }} · {{ citation.evidence_id }}</a
+  >
+</p>
+<blockquote>{{ citation.quote }}</blockquote>

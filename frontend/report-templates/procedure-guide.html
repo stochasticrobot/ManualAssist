@@ -1,0 +1,81 @@
+{# Include a complete saved guide in the downloadable HTML report. Steps, warnings,
+source references and unresolved limitations are all retained so the export does
+not suggest that an incomplete guide is finished. #}
+<section>
+  <h3>{{ guide.title }}</h3>
+  <p>
+    {{ guide.kind }} · {{ guide.status }} · {{ guide.get('completion', '') }}
+  </p>
+  <p>Outcome: {{ guide.outcome }}. Applies to: {{ guide.applies_to }}</p>
+  {% if guide.get('generation_failed') %}
+  <p>Generation failed; this guide is incomplete.</p>
+  {% endif %} {% if guide.prerequisites %}
+  <h4>Before you begin</h4>
+  {% endif %} {% for instruction in guide.prerequisites %}
+  <p>{{ instruction.text }}</p>
+  {% for citation in instruction.citations %}{% include 'citation.html' %}{%
+  endfor %} {% endfor %} {% if guide.schedule %}
+  <h4>Schedule</h4>
+  <p>{{ guide.schedule.text }}</p>
+  {% for citation in guide.schedule.citations %}{% include 'citation.html' %}{%
+  endfor %} {% endif %} {% for step in guide.steps %}
+  <article>
+    <h4>{{ step.id }} · {{ step.title }}</h4>
+    <p>Applies when: {{ step.applies_when }}</p>
+    {% if step.after_step_ids %}
+    <p>After steps: {{ step.after_step_ids | join(', ') }}</p>
+    {% endif %}
+    <p>{{ step.instruction }}</p>
+    {% for citation in step.citations %}{% include 'citation.html' %}{% endfor
+    %} {% for field, title in [('warnings', 'Warnings'), ('checks', 'Completion
+    checks')] %} {% if step[field] %}
+    <h5>{{ title }}</h5>
+    {% endif %} {% for instruction in step[field] %}
+    <p>{{ instruction.text }}</p>
+    {% for citation in instruction.citations %}{% include 'citation.html' %}{%
+    endfor %} {% endfor %}{% endfor %}
+  </article>
+  {% endfor %} {% if guide.get('independent_checks') %}
+  <h4>Independent documented checks</h4>
+  <p>These checks are not an ordered diagnostic path.</p>
+  {% endif %} {% for check in guide.get('independent_checks', []) %}
+  <article>
+    <h5>{{ check.symptom }}</h5>
+    <p>Applies to: {{ check.applies_to }}</p>
+    <p>{{ check.instruction }}</p>
+    {% for citation in check.citations %}{% include 'citation.html' %}{% endfor
+    %}
+  </article>
+  {% endfor %} {% if guide.troubleshooting %}{% set tree = guide.troubleshooting
+  %}
+  <h4>{{ tree.symptom }}</h4>
+  <p>Applies to: {{ tree.applies_to }}. Start at {{ tree.root }}.</p>
+  {% for precaution in tree.prerequisites %}
+  <p>{{ precaution.question }}: {{ precaution.answer }}</p>
+  {% for citation in precaution.citations %}{% include 'citation.html' %}{%
+  endfor %}{% endfor %} {% for node in tree.nodes %}
+  <article>
+    <h5>{{ node.id }} · {{ node.kind }}</h5>
+    <p>{{ node.text }}</p>
+    {% for citation in node.citations %}{% include 'citation.html' %}{% endfor
+    %}
+    <ul>
+      {% for branch in node.branches %}
+      <li>
+        {{ branch.condition }} → {{ branch.next_node }} {% for citation in
+        branch.citations %}{% include 'citation.html' %}{% endfor %}
+      </li>
+      {% endfor %}
+    </ul>
+  </article>
+  {% endfor %} {% endif %} {% for field, title in [('unanswered_questions',
+  'Unanswered questions'), ('review_issues', 'Review issues'),
+  ('review_suggestions', 'Review suggestions')] %} {% if guide.get(field) %}
+  <h4>{{ title }}</h4>
+  <ul>
+    {% for note in guide[field] %}
+    <li>{{ note }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %} {% endfor %}
+</section>

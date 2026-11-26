@@ -1,0 +1,21 @@
+[project]
+name = "manual-workbench"
+version = "0.1.0"
+description = "Evidence-first agentic manual workbench"
+requires-python = ">=3.12"
+dependencies = ["fastapi", "uvicorn", "python-multipart", "boto3", "python-dotenv", "pydantic", "jsonschema", "pillow", "pypdfium2", "docling", "chromadb", "jinja2"]
+
+[project.optional-dependencies]
+test = ["pytest", "httpx", "ruff", "playwright"]
+
+[tool.pytest.ini_options]
+pythonpath = ["backend/src"]
+testpaths = ["backend/tests"]
+
+[build-system]
+requires = ["setuptools>=78"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["backend/src"]
+include = ["workbench*"]

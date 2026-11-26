@@ -1,0 +1,49 @@
+# Credentials and local settings
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+.aws/
+
+# Uploaded manuals, extracted data, request history and working notes
+/data/
+/evidence/
+/experiments/
+/notes/
+/memory/
+/backups/
+AGENTS.md
+SOUL.md
+USER.md
+MEMORY.md
+TOOLS.md
+*.pdf
+*.log
+*.tmp
+*.bak
+*.zip
+
+# Environments, dependencies and generated files
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+node_modules/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+/build/
+/dist/
+playwright-report/
+test-results/
+
+# Editor and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

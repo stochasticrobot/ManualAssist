@@ -1,0 +1,6 @@
+# Runtime plus offline testing and browser-development tools.
+-r requirements.txt
+pytest==9.2.0
+httpx==0.28.1
+ruff==0.17.6
+playwright==1.65.2

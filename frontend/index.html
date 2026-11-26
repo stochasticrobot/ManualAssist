@@ -1,0 +1,230 @@
+<!doctype html>
+<!-- Define the browser application’s main page, navigation and empty display areas.
+
+The page provides places for uploaded manuals, analysis progress and saved
+results. Browser code fills those areas and handles controls; this HTML does not
+analyse a PDF. -->
+
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Operating Manual Assistant</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <aside>
+      <a class="brand" href="/"
+        >▤ <span>Operating Manual<br /><strong>Assistant</strong></span></a
+      ><button id="new-document" class="new-document">
+        Import another PDF
+      </button>
+      <div class="aside-label">DOCUMENTS</div>
+      <div id="jobs"></div>
+      <div class="aside-foot">
+        Models<br /><small>Text: DeepSeek V3.2<br />Images: Nova 2 Lite</small>
+      </div>
+    </aside>
+    <main>
+      <header><h1 id="page-title">PDF parsing</h1></header>
+      <nav id="flow-nav" aria-label="Processing stages">
+        <button data-tab="import" class="active">1. PDF parsing</button>
+        <button data-tab="extraction" disabled>2. Fact extraction</button>
+        <button data-tab="aids" disabled>
+          3. FAQ and troubleshooting steps
+        </button>
+        <button data-tab="analysis" disabled>4. Agentic guides</button>
+        <button data-tab="overview" disabled>Results</button>
+      </nav>
+      <div id="document-bar" class="document-bar" hidden>
+        <h2 id="title"></h2>
+        <span id="status" class="status"></span>
+      </div>
+      <section
+        id="results-product"
+        class="results-product"
+        aria-label="Product information"
+        hidden
+      ></section>
+      <nav id="tabs" aria-label="Results sections" hidden>
+        <button data-tab="overview">
+          <span aria-hidden="true">◫</span> Overview
+        </button>
+        <button data-tab="troubleshooting">
+          <span aria-hidden="true">⌕</span> Troubleshooting
+        </button>
+        <button data-tab="installation">
+          <span aria-hidden="true">⚙</span> Installation
+        </button>
+        <button data-tab="maintenance">
+          <span aria-hidden="true">◇</span> Maintenance
+        </button>
+        <button data-tab="questions">
+          <span aria-hidden="true">?</span> Ask a question
+        </button>
+        <button data-tab="faq"><span aria-hidden="true">≡</span> FAQ</button>
+        <button data-tab="reference">
+          <span aria-hidden="true">▤</span> Reference
+        </button>
+        <button data-tab="review">
+          <span aria-hidden="true">△</span> Needs review
+        </button>
+      </nav>
+      <div id="context-tools" class="page-actions" hidden>
+        <button data-tab="sources" class="secondary">
+          <span aria-hidden="true">▤</span> View manual
+        </button>
+        <button id="browse-reference" data-tab="reference" class="secondary">
+          <span aria-hidden="true">≡</span> Browse all reference information
+        </button>
+        <button id="return-context" class="secondary" hidden>Back</button>
+        <details id="result-tools">
+          <summary>Downloads &amp; technical details</summary>
+          <div id="result-downloads" class="downloads"></div>
+          <button data-tab="knowledge" class="secondary">
+            Knowledge base details
+          </button>
+        </details>
+      </div>
+      <div id="notice" role="status"></div>
+      <div
+        id="live-status"
+        class="sr-only"
+        role="status"
+        aria-live="polite"
+      ></div>
+      <section id="import" class="tab">
+        <div class="upload-card">
+          <div>
+            <h2>Upload a PDF manual</h2>
+            <p>
+              Up to 25 MiB and 80 pages. Fact extraction starts automatically
+              after successful PDF processing; the remaining analysis follows.
+            </p>
+          </div>
+          <label id="choose-pdf" class="button"
+            ><span id="choose-pdf-text">Choose PDF</span
+            ><input id="file" type="file" accept="application/pdf" hidden
+          /></label>
+        </div>
+        <div id="import-progress" class="card" hidden>
+          <h2 id="import-title"></h2>
+          <p id="import-message"></p>
+          <progress
+            id="import-bar"
+            aria-label="PDF import progress"
+            hidden
+          ></progress>
+          <p id="import-elapsed" class="fine"></p>
+        </div>
+        <div id="import-stats" class="metrics"></div>
+        <div id="import-summary"></div>
+        <div id="import-actions" class="page-actions" hidden>
+          <button id="continue-analysis" data-tab="extraction">
+            View fact extraction →</button
+          ><button data-tab="sources" class="secondary">
+            View sources and outline
+          </button>
+        </div>
+      </section>
+      <section id="extraction" class="tab" hidden></section>
+      <section id="aids" class="tab" hidden></section>
+      <section id="analysis" class="tab" hidden>
+        <div id="workflow-panel-content">
+          <p id="panel-description"></p>
+          <div class="page-actions">
+            <button data-tab="audit" class="secondary">
+              View activity and model requests
+            </button>
+          </div>
+          <div id="analysis-status" class="progress-panel">
+            <div>
+              <h2 id="stage"></h2>
+              <p id="message"></p>
+            </div>
+            <div class="page-actions">
+              <button id="next-workflow-panel" data-tab="aids">
+                View FAQ and troubleshooting steps →
+              </button>
+              <button id="analyze" hidden>Start analysis</button
+              ><button id="resume" hidden>Resume analysis</button
+              ><button id="show-results" data-tab="overview" hidden>
+                View results →
+              </button>
+            </div>
+          </div>
+          <section
+            id="fact-ticker"
+            class="card fact-ticker"
+            aria-label="Recently extracted facts"
+          ></section>
+          <div id="token-metrics" class="metrics"></div>
+          <p id="usage-note" class="fine"></p>
+          <div id="estimate" class="card"></div>
+          <div id="panel-outputs" class="card" hidden></div>
+          <div id="guide-investigation-progress" hidden></div>
+          <div class="analysis-grid">
+            <section class="card">
+              <h2>Stage steps</h2>
+              <ol id="analysis-plan" class="analysis-plan"></ol>
+            </section>
+            <section class="card">
+              <h2 id="inspection-heading">Latest inspection</h2>
+              <div id="current-inspection"></div>
+              <div id="batch-progress"></div>
+            </section>
+          </div>
+          <section class="card">
+            <h2>Inspection history</h2>
+            <div id="decision-history"></div>
+          </section>
+        </div>
+      </section>
+      <section id="overview" class="tab" hidden></section>
+      <section id="troubleshooting" class="tab" hidden></section>
+      <section id="installation" class="tab" hidden></section>
+      <section id="maintenance" class="tab" hidden></section>
+      <section id="faq" class="tab" hidden></section>
+      <section id="reference" class="tab" hidden></section>
+      <section id="sources" class="tab" hidden>
+        <div class="source-grid">
+          <div>
+            <h3>Document outline</h3>
+            <div id="outline"></div>
+            <h3>Extracted text and tables</h3>
+            <input id="evidence-search" placeholder="Search extracted text…" />
+            <div id="evidence"></div>
+          </div>
+          <div class="page-viewer">
+            <div class="page-controls">
+              <button id="prev">←</button><span id="page-label"></span
+              ><button id="next">→</button
+              ><a id="original" target="_blank" rel="noopener"
+                >Original PDF ↗</a
+              >
+            </div>
+            <img id="page-image" alt="Selected PDF page" />
+          </div>
+        </div>
+      </section>
+      <section id="knowledge" class="tab" hidden></section>
+      <section id="questions" class="tab" hidden>
+        <h2>Ask a question about this manual</h2>
+        <form id="ask-form">
+          <input
+            id="question"
+            required
+            minlength="2"
+            maxlength="1500"
+            placeholder="What operating temperature range is specified?"
+          /><button id="ask-button">Ask</button>
+        </form>
+        <div id="answer" aria-live="polite"></div>
+      </section>
+      <section id="review" class="tab" hidden></section>
+      <section id="audit" class="tab" hidden></section>
+    </main>
+    <script type="module" src="/static/src/application-navigation.js"></script>
+  </body>
+</html>
