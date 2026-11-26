@@ -47,3 +47,6 @@ test-results/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Authored, live-tested demonstration manual only
+!/examples/mk-ii-laser-blaster/manual.pdf

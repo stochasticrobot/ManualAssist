@@ -106,6 +106,14 @@ Use Python 3.12 on Linux and a Bedrock account with access to your configured mo
 Follow the [installation and configuration guide](docs/setup.md), then run `./run.sh`
 and open **http://127.0.0.1:8786/**. The frontend needs no build step.
 
+## Try a sample manual
+
+Upload the [Mk II Laser Blaster demo PDF](examples/mk-ii-laser-blaster/manual.pdf):
+a fictional training product with battery installation, a manual safety, human-contact
+and low-power interlocks, cleaning, and troubleshooting. In a live DeepSeek V3.2 run,
+all five planned guides completed automated review; two retained unanswered-information
+notes. [Test details and limitations](examples/mk-ii-laser-blaster/README.md).
+
 ## Development
 
 - [Code guide](CODE_GUIDE.md): where to start reading.
